@@ -1,0 +1,67 @@
+Pored figura koje igrači koriste, postoji i jedna “duh” figura - ona započinje svoje kretanje
+kada i prvi igrač i kreće se po putanji “u pozadini” 
+//Nesto se krece u pozadini -> uporedo sa necim drugim, znaci da je u pitanju nit
+//bile jos 3 figure koje se krecu jedna nakon druge, ne moraju istovremeno niti u pozadini, nisu niti, krecu se SEKVENCIJALNO (jedna nakon druge)!!!
+
+@Override
+    public void run() {
+        try {
+            while (isGhostAlive) {
+                clearDiamonds();
+                findPositionsForGhost();
+                for (int i = 0; i < randomPositions.size(); i++) {
+                    checkPause();
+
+                    Integer randomPosition = randomPositions.get(i);
+                    Bonus bonus = new Diamond();
+		    
+		    //cesto se upotrebljava sinhronizacija objekta koji predstavlja GUI dio
+		    //Game.getMainFrame() znaci da je u pitanju public static objekat -> KORISTITI STO CESCE NA PROJEKTU I PISMENOM!!!
+                    synchronized (Game.getMainFrame()) {
+			//sinhronizacija liste koja sadrzi objekte na mapi (neka Arraylista)
+                        synchronized (GameMatrix.getMapTraversal()) {
+                            if (GameMatrix.getMapTraversal().get(randomPosition) instanceof Figure) {
+                                Figure f = (Figure) GameMatrix.getMapTraversal().get(randomPosition);
+                                f.setBonusCount(f.getBonusCount() + 1);
+                            } else {
+                                if (!MainFrame.checkIfFieldIsBlack(randomPosition)) {
+                                    MainFrame.setBonusLabel(randomPosition);
+                                    GameMatrix.setMapTraversal(randomPosition, bonus);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                sleep(5000);
+
+                checkPause();
+
+                synchronized (Game.getMainFrame()) {
+                    synchronized (GameMatrix.getMapTraversal()) {
+                        MainFrame.clearBonuses();
+                    }
+                }
+            }
+        } catch (InterruptedException ex) {
+            Game.log(ex);
+        }
+    }
+
+            
+
+
+	
+	//isAlive() -> ako je nit ziva
+	//igra je zavrsena i hocemo da se i ghostFigure prestane kretati, znaci treba da je pridruzimo glavnoj niti, koristi se join()!!!
+	if (ghostFigure.isAlive()) {
+                try {
+                    ghostFigure.setGhostAlive();
+                    ghostFigure.join();
+                } catch (InterruptedException ex) {
+                    log(ex);
+                }
+            }
+
+	//ako postoji npr. potreba da se igra pauzira, pozovemo wait() nad svim nitima
+	//i ako koristik pritisne dugme za nastavak, poziv notifyAll() (moze i notify() nad svakom niti, ali nema potrebe)
