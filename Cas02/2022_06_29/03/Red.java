@@ -11,10 +11,7 @@ public class Red {
 		
 	}
 	
-	public void dodajStudenta(Student s) {
-		synchronized(lock1) {
-			
-		}
+	public synchronized void dodajStudenta(Student s) {
 		Red cvor = new Red();
 		cvor.st = s;
 		if(glava == null) {
@@ -28,10 +25,8 @@ public class Red {
 		
 	}
 	
-	public Student ukloniStudenta() {
-		synchronized(lock1) {
-			
-		}
+	public synchronized Student ukloniStudenta() {
+		
 		if(glava != null) {
 			
 			Student elem = glava.st;
