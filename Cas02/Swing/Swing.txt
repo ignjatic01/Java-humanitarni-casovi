@@ -1,0 +1,25 @@
+Video:
+https://www.youtube.com/watch?v=lctZ-NAWgDU
+
+Smjernice:
+-Fiksirati velicinu prozora da se ne moze mijenjati, olaksati sebi posao
+-Izgled kod swinga je los, ali bolji ne treba, samo da se vide poredane komponente, ne truditi se previse...
+-Kad se instancira objekat za GUI on kreira jos jednu nit u pozadini
+-Sinhronizovati gui objekat (nit) da se na ekranu ne desavaju nepredvidjene stvari
+-U projektu iz glavne logike pristupati STATICKOM objektu koji predstavlja GUI i pozivati njegove metode
+-Kad se pozovu te neke metode, one ce azurirati izgled
+
+Komponente koje se najcesce koriste u swingu:
+-JLabel (mozete koristiti ovo kao matricu koja predstavlja mapu i mijenjati sadrzaj odgovarajucih labela)
+-JButton (dvoklikom na button kada programirate kreirate actionPerformed tj. sta se desava na klik)
+ILI
+showFilesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileForm fileForm = new FileForm();
+                fileForm.setVisible(true); //kako omoguciti vidljivost neke GUI komponente
+            }
+        }); //dodate sami actionListener -> sta se desi kada kliknete
+
+
+//Sve ostalo -> Google, Chat GPT
