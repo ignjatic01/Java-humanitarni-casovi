@@ -1,0 +1,221 @@
+Usmeni ispit se sastoji od 3 zadatka. U sklopu prvog zadatka ima 7 zadataka: ulancavnje konstruktora,
+klase i interfejsi, izuzeci, niti, serijalizacija, genericke funkcije i proizvoljan zadatak (interfejsi, lambde, stream api).
+Drugi zadatak je pracenje memorije (moramo prikazati stanje na steku i hipu, kao i ispise).
+Treci zadatak su snipeti i svaki nosi po jedan bod (broj snipeta zavisi od broja bodova na u drugom zadatku, uglavnom od 6 do 9)
+Preporuka: Raditi prvi zadatak 35 do 40 minuta, drugi od 15 do 20, a zadnjih 10 minuta ostaviti obavezno za treci.
+
+STVARI NA KOJE TREBA OBRATITI PAZNJU:
+
+1. Prilikom konstrukcije objekata, izvrsavaju se:
+	1) Staticki blok (kroz roditeljske klase, sve do klase ciji se objekat instancira (izvrsavaju se samo jednom))
+	2) poziv super() (svejedno da li je implicitan ili eksplicitan poziv) ili this()
+	3) clanovi klase
+	4) nestaticki blokovi
+	5) ostatak konstruktora
+	//Tacke 3 i 4 se izvrsavaju redom kojim su navedene u klasi
+
+2. Podrazumijevani modifikator pristupa za clanove klasa je paketski (anonimni) a za interfejse javni (public)
+	public class A
+	{
+		int br; //paketski nivo pristupa
+	}
+	
+	public interface B
+	{
+		int br; //javni nivo pristupa
+	}
+
+3. Kod redefinisanja metoda, ne moze se smanjiti vidljivost metode (npr. ako roditeljska klasa ima modifikator public,
+metoda klase nasljednice ne moze imati protrcted). Redosljed modifikatora pristupa po vidljivosti
+	1) public
+	2) protected
+	3) paketski (anonimni)
+	4) private
+
+4. Na ispitu obavezno razlikovati kompajlerske i Runtime greske
+
+5. Ne moze se kastovati objekat tipa Integer u tip Double.
+
+6. Ako klasa implementira AutoCloseable interfejs, onda se prilikom izlaska iz bloka try_with_resources poziva close() metoda
+
+7. Prilikom vjezbanja, obavezno citati java api.
+
+8. Kod catch blokova, ukoliko imamo prvo catch blok roditeljske klase, a nakon njega blok klase nasljednice, desice se greska pri kompajliranju
+	
+	class C1 extends Exception
+	{
+	}
+	
+	class C2 extends C1
+	{
+	}
+	
+	...
+	
+	try
+	{
+		throw new C2();
+	}
+	catch(C1 e)
+	{
+	}
+	catch(C2 e)
+	{
+	}
+9. Objekat klase String je konstantan pa svaki poziv metode nad tim objektom vraca novi objekat tipa String
+	String b = "test";
+	String a = b.toUpperCase();
+
+10. Ukoliko klasa implementira interfejs Serializable, nece se pozivati metode readExternal() i writeExternal()
+
+11. Paziti da li je varijabla staticka ili nestaticka
+
+12. Ako interfejs nasljedjuje dva interfejsa koji imaju varijablu koja se isto zove, pristupamo tim varijablama pomocu naziva interfejsa.
+	
+	interface I1
+	{
+		int x;
+	}
+	
+	interface I2
+	{
+		int x;
+	}
+	
+	interface I extends I1, I2
+	{
+		default int metoda()
+		{
+			return I1.x + I2.x;
+		}	
+	}
+
+13. Obratiti paznju kada se u konstruktoru koristi lokalna varijabla
+
+	class A
+	{
+		int x = 5;
+		
+		public A(int x)
+		{
+			if(this.x == x)
+			{
+				x++;
+			}
+		}
+		
+		public static void main(String args[])
+		{
+			A a = new A(7);
+			System.out.println(a.x);
+		}
+	}
+	
+14. public static void main(String []args) je takodje validan potpis main metode.
+
+15. Runtime izuzeci ne moraju biti obradjeni try_catch blokom
+
+17. Bilo kakav kod nakon poziva "return" u void metodi ce izazvati gresku pri kompajliranju (unreachable statement)
+	
+	public void metoda()
+	{
+		int x = 5;
+		return;
+		x++;
+	}
+
+18. Privatne metode se ne nasljedjuju pa se samim tim ne mogu redefinisati (cesto bude na ispitu)
+
+	public class A1
+	{
+		private void metoda()
+		{
+		}
+	}
+	
+	public class A2 extends A1
+	{
+		//Greska pri kompajliranju ukoliko je navedena anotacija "@Override"
+		@Override
+		private void metoda()
+		{
+		}
+	}
+	
+19. Prilikom redefinisanja metode, povratni tip mora biti identican ili podtip povratnog tipa iz metode roditeljske klase
+
+20. Objekat klase nasljednice ne moze referencirati objekat roditeljske klase
+
+21. Kada se objekat klase Thread pokusa ponovo pokrenuti, baca se izuzetak: IlegalThreadStateException
+
+22. Kada imamo return unutar finally bloka, ignorise se baceni izuzetak u try bloku (ne vrsi se propagacija)
+
+23. Ako imamo bilo kakav kod nakon poziva throw, dobijamo gresku pri kompajliranju (unreachable statement)
+
+24. Ako klasa implementira Serializable interfejs onda moze u sebi da sadrzi metode metode readObject i writeObject, ali da bi one
+bile koristene, moraju imati isti potpis kao u java api-ju, dakle: "private void writeObject(ObjectOutputStream out) throws IOException"
+i isto vazi za readObject samo sto ona dodatno baca i ClassNotFoundexception (OBAVEZNO PROVJERITI). Ako metode u nasoj klasi imaju drugaciji modifikator pristupa
+ili bilo sta drugacije, onda se uopste nece koristiti ove metode sem ako se negdje eksplicitno ne pozovu. Kod Serializable objekta se nece pozivati default-ni 
+konstruktor prilikom deserijalizacije za razliku od Externalizable.
+
+24. Klasa moze da implementira interfejse Externalizable i Serializable istovremeno. U tom slucaju interfejs Extenializable nadjacava interfejs Serializable, tj.
+pozivace se samo metode readExternal i writeExternal.
+
+25. Difoltan naziv niti: "Thread-id"; gdje id predstavlja redni broj kreirane niti (kreirana znaci da je pozvan konstruktor, a ne metoda start);
+Main nit se zove "main"
+
+26. Ako metoda moze baciti izuzetak, a to nije specifikovano u potpisu metode i ako finally blok ima return, kod ce se moci kompajlirati.
+
+27. Ako klasa nasljedjuje klasu koja ima metodu m1() i implementira interfejs koji ima metodu m1(), uvijek ce se pozivati metoda roditeljske klase.
+
+	public interface I1
+	{
+		default void m1()
+		{
+			System.out.println("I1");
+		}
+	}
+	
+	public class A1
+	{
+		public void m1()
+		{
+			System.out.println("A1");
+		}
+	}
+	
+	public class A2 extends A1 implements I1
+	{
+		public static void main(String args[])
+		{
+			A2 a2 = new A2();
+			a2.m1(); //A1
+		}
+	}
+	
+28. Ako imamo private konstruktor koji se iskljucivo poziva unutar svoje klase, nece biti gresaka pri kompajliranju.
+
+29. Interfejsi se ne mogu instancirati osim ako ga ne kreiramo kao anonimnu klasu
+
+	I i = new I() { //redefinisanje metoda }
+	
+30. Kod try_with_Resources bloka, ako  close() metoda baci izuzetak, izuzetak ce biti uhvacen odgovarajucim catch blokom.
+
+31. static metoda ne moze biti apstraktna, niti se moze naslijediti, niti redefinisati
+
+32. Ako prilikom konstrukcije objekta u superklasi pozovemo this.method(), pozvace se metoda objekta koji se konstruise.
+
+33. Staticka metoda se moze pozvati nad instanciranim objektom
+
+34. Da bi se moglo izvrsiti kloniranje objekta, potrebno je implementirati Cloneable interfejs. Ako nije implementiran, baca se CloneNotSupportedException
+
+35. Nestaticke varijable se ne mogu referencirati u statickim blokovima, metodama i klasama (kompajlerska greska)
+
+36. Kod Externalizable deserijalizacije, ako klasa nema public konstruktor, baca se izuzetak InvalidClassException
+
+37. Izuzetak u lambda izrazu mora biti obradjen
+
+38. Ordinal u enumeraciji je indeks konstante ???
+
+39. U interfejsima u javi, metode mogu imati tijelo (biti implementirane) ako se navede kljucna rijec default ili static
+
