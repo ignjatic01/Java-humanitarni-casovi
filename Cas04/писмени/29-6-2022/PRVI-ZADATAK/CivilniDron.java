@@ -1,6 +1,8 @@
 
 
 public class CivilniDron extends Dron {
+
+	
 	//jasno naznacen atribut u tekstu zadatka
 	public long domet;
 
@@ -10,6 +12,7 @@ public class CivilniDron extends Dron {
 		super(model, oznaka);
 		domet = d;
 	}
+	
 	
 	@Override
 	public String tip() {

@@ -3,17 +3,17 @@ import java.util.Random;
 
 //Sve letjelice imaju transponder, a letjelica je prakticno krovna klasa koju nasljedjuju ostale, pa se samo tu i implementira
 //nema ponavljanja, sve sto se moze staviti u klasu koja je na visem nivou hijerarhije, treba da se uradi
-abstract public class Letjelica extends Thread  implements Transponder {
+abstract public class Letjelica extends Thread implements Transponder {
 	//atributi definisani u tekstu zadatka
 	public String model;
 	public String oznaka;
 	
 	public int xKoordinata;
 	public int yKoordinata;
-	public static int VRIJEME_KRETANJA = 3000;
 	
 	//Jer je naznaceno da transponder moze biti iskljucen
 	public boolean transponderIskljucen = false;
+	//Letjelica moze biti srusena
 	public boolean srusioLetjelicu = false;
 	
 	public Letjelica() {
@@ -39,6 +39,8 @@ abstract public class Letjelica extends Thread  implements Transponder {
 	//KORISTENO SAMO ZA ISPIS -> komentar ostavljen dok sam radio rok, nekad nije lose ni to, ali sto manje!
 	//izbjegnut problem sa instanceof
 	abstract String tip();
+	
+	abstract long vrijemeKretanjaZaVozilo();
 		
 	//Provjera da li je transponder iskljucen, ako nije, vrati yKoordinatu	
 	@Override
@@ -49,7 +51,6 @@ abstract public class Letjelica extends Thread  implements Transponder {
 			return -1;
 		}
 	}
-
 	
 	@Override
 	public String toString() {
@@ -67,7 +68,7 @@ abstract public class Letjelica extends Thread  implements Transponder {
 			}
 			yKoordinata++;
 			try {
-				sleep(Simulacija.VRIJEME_PROVEDENO_NA_POLJU);
+				sleep(vrijemeKretanjaZaVozilo());
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -77,9 +78,25 @@ abstract public class Letjelica extends Thread  implements Transponder {
 				Simulacija.MAPA[xKoordinata][yKoordinata-1] = null;
 				Simulacija.MAPA[xKoordinata][yKoordinata] = this;
 			}
-						
-						
-				
+			
+			
+			//Ako je vojno vozilo, transponder se naizmjenicno ukljuci/iskljuci
+			if(this instanceof RaketaInterface) {
+				if(transponderIskljucen) {
+					transponderIskljucen = false;
+				} else {
+					transponderIskljucen = true;
+				}
+			}
+			
+			//Vojni helikopteri mogu da slete na bilo koju poziciju na mapi
+			if(this instanceof MitraljezInterface) {
+				boolean sansaDaSleti = new Random().nextBoolean();
+				if(sansaDaSleti) {
+					System.out.println(this + " SLETIO!");
+					break;
+				}
+			}
 			
 			System.out.println(this + "NASTAVIO KRETANJE NA POZICIJU " + "[" + xKoordinata + ","+yKoordinata + "]");
 		}

@@ -67,6 +67,7 @@ public class Main
 		
 		//2
 		System.out.println("Ukupna velicina svih fajlova: " + fajlovi.stream().mapToLong(f -> {
+			//LongStream
 			Long size = 0L;
 			try
 			{
@@ -81,6 +82,8 @@ public class Main
 		
 		//3
 		//Pomocu collect grupisemo fajlove na osnovu ekstenzije
+		
+		//Map<String, List<File>> 
 		fajlovi.stream().collect(Collectors.groupingBy(f -> f.getName().substring(f.getName().lastIndexOf("."), f.getName().length())))
 			//Nakon grupisanja, sortiramo ih na osnovu prvog slova u nazivu i ispisemo ih
 			.forEach((key, value) -> {
@@ -112,7 +115,6 @@ public class Main
 			//try with resources blok, nema brige oko zatvranja streamova
 			try(PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(ulaz))))
 			{
-				
 				if(!folder.exists())
 				{
 					folder.mkdir();
@@ -132,11 +134,13 @@ public class Main
 					//upis u fajl
 					pw.println(line);
 					//upis sortiranih elemenata u fajl
+	
+					
 					try(PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(new File(folder.getAbsolutePath() + File.separator + "sortirani" + line.charAt(0) + ".txt"), true))))
 					{
 						pw2.println(line);
 					}
-					catch(IOException e)
+					catch(Exception e)
 					{
 						e.printStackTrace();
 					}
@@ -147,7 +151,7 @@ public class Main
 				e.printStackTrace();
 			}
 			//ispis putanje do fajla i broja redova za pocetno slovo
-			System.out.println("Putanja do fajla je: " + folder.getPath());
+			System.out.println("Putanja do foldera je: " + folder.getPath());
 			mapaSlova.entrySet().stream().forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
 		}
 		catch(Exception e)

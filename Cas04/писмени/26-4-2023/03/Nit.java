@@ -13,6 +13,7 @@ public class Nit extends Thread
 		start();
 	}
 	
+	@Override
 	public void run()
 	{
 		Random rand = new Random();
@@ -39,6 +40,7 @@ public class Nit extends Thread
 			System.out.println("Nit " + this.id + " obradjuje studenta " + temp); 
 			
 			//Druge niti ce automatski vidjeti promjenu counterStudenta jer je volatile
+			
 			if(rand.nextDouble() <= 0.02 && Main.counterStudenata < 2)
 			{
 				Main.izabrani.add(temp);

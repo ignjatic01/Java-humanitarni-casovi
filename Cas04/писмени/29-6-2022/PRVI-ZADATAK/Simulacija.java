@@ -1,11 +1,11 @@
 import java.lang.Thread;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+import java.io.*;
 
-public class Simulacija extends Thread {
+public class Simulacija {
 
 	public static final long VRIJEME_GENERISANJA = 500;
-	public static final long VRIJEME_PROVEDENO_NA_POLJU = 1000;
+	public static final long VRIJEME_PROVEDENO_NA_POLJU = 3000;
 	public static final String FAJL_ZA_EVIDENTIRANJE = "evidentiraj.txt";
 	public static ArrayList<Letjelica> letjelice = new ArrayList<>();
 	public static final int BR_RAZLICITH_VRSTA = 7;
@@ -17,8 +17,8 @@ public class Simulacija extends Thread {
 	private int BR_ZIVIH = 7;
 	private boolean prviPokusaj = false;
 	public static ArrayList<Letjelica> otkriveneLetjelice = new ArrayList<>();
-	public static String fajlZaLetjelice = "/letjelice.txt";
-	public static String fajlZaRakete = "/rakete.txt";
+	public static String fajlZaLetjelice = "." + File.separator + "letjelice.txt";
+	public static String fajlZaRakete = "." + File.separator + "rakete.txt";
 	
 	public static void main(String[] args) {
 		
@@ -27,7 +27,7 @@ public class Simulacija extends Thread {
 		kL.start();
 		for(Letjelica l : letjelice) {
 			//svakih pola sekunde zapocni kretanje jedne letjelice
-			l.start();
+			l.start(); //redefinise se metoda run()
 			try {
 				Thread.sleep(VRIJEME_GENERISANJA);
 			} catch(InterruptedException e) { //bolje catch Exception e

@@ -24,6 +24,7 @@ public class KontrolaLeta extends Thread {
 				//ako je pronadjeno vozilo na odredjenoj poziciji, pri cemu ovdje instanceof ne predstavlja problem
 				if(Simulacija.MAPA[xKoord][yKoord] instanceof Letjelica) {
 				
+				//Object
 				Letjelica l = (Letjelica)Simulacija.MAPA[xKoord][yKoord];
 				//ako se letjelica ne nalazi u nizu otkrivenih letjelica
 				if(!Simulacija.otkriveneLetjelice.contains(l)) {
