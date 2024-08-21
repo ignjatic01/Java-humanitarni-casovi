@@ -1,0 +1,2 @@
+>>tf102||S8||2||1530||Samsung||Telefon<<
+>>tf104||S7||5||850||Samsung||Telefon<<
